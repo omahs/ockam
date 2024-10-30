@@ -5,8 +5,8 @@ use crate::nodes::connection::{Changes, Instantiator};
 use crate::{local_multiaddr_to_route, try_address_to_multiaddr};
 
 use ockam::identity::{
-    Identifier, SecureChannelOptions, SecureChannels, TrustEveryonePolicy,
-    TrustMultiIdentifiersPolicy,
+    CredentialRetrieverCreator, Identifier, SecureChannelOptions, SecureChannels,
+    TrustEveryonePolicy, TrustMultiIdentifiersPolicy,
 };
 use ockam_core::{async_trait, route, Route};
 use ockam_multiaddr::proto::Secure;
@@ -20,22 +20,25 @@ pub(crate) struct SecureChannelInstantiator {
     timeout: Option<Duration>,
     secure_channels: Arc<SecureChannels>,
     authority: Option<Identifier>,
+    credential_retriever_creator: Option<Arc<dyn CredentialRetrieverCreator>>,
 }
 
 impl SecureChannelInstantiator {
     pub(crate) fn new(
-        identifier: &Identifier,
+        identifier: Identifier,
         timeout: Option<Duration>,
         authorized_identities: Option<Vec<Identifier>>,
         authority: Option<Identifier>,
         secure_channels: Arc<SecureChannels>,
+        credential_retriever_creator: Option<Arc<dyn CredentialRetrieverCreator>>,
     ) -> Self {
         Self {
-            identifier: identifier.clone(),
+            identifier,
             authorized_identities,
             authority,
             timeout,
             secure_channels,
+            credential_retriever_creator,
         }
     }
 }
@@ -68,6 +71,13 @@ impl Instantiator for SecureChannelInstantiator {
         } else {
             options
         };
+
+        let options =
+            if let Some(credential_retriever_creator) = self.credential_retriever_creator.clone() {
+                options.with_credential_retriever_creator(credential_retriever_creator)?
+            } else {
+                options
+            };
 
         let options = if let Some(timeout) = self.timeout {
             options.with_timeout(timeout)

@@ -8,7 +8,9 @@ use ockam_multiaddr::proto::Project;
 use ockam_multiaddr::{Match, MultiAddr, Protocol};
 use ockam_node::Context;
 
-use ockam::identity::{Identifier, SecureChannelOptions, SecureChannels};
+use ockam::identity::{
+    CredentialRetrieverCreator, Identifier, SecureChannelOptions, SecureChannels,
+};
 use ockam_transport_tcp::TcpTransport;
 use std::time::Duration;
 
@@ -19,6 +21,7 @@ pub(crate) struct ProjectInstantiator {
     cli_state: CliState,
     secure_channels: Arc<SecureChannels>,
     tcp_transport: TcpTransport,
+    credential_retriever_creator: Option<Arc<dyn CredentialRetrieverCreator>>,
 }
 
 impl ProjectInstantiator {
@@ -26,8 +29,9 @@ impl ProjectInstantiator {
         identifier: Identifier,
         timeout: Option<Duration>,
         cli_state: CliState,
-        secure_channels: Arc<SecureChannels>,
         tcp_transport: TcpTransport,
+        secure_channels: Arc<SecureChannels>,
+        credential_retriever_creator: Option<Arc<dyn CredentialRetrieverCreator>>,
     ) -> Self {
         Self {
             identifier,
@@ -35,6 +39,7 @@ impl ProjectInstantiator {
             cli_state,
             secure_channels,
             tcp_transport,
+            credential_retriever_creator,
         }
     }
 }
@@ -61,22 +66,16 @@ impl Instantiator for ProjectInstantiator {
             .cast::<Project>()
             .ok_or_else(|| ApiError::core("invalid project protocol in multiaddr"))?;
 
-        let (project_multiaddr, project_identifier) = self
+        let project = self
             .cli_state
             .projects()
             .get_project_by_name(&project)
-            .await
-            .map(|project| {
-                (
-                    project.project_multiaddr().cloned(),
-                    project
-                        .project_identifier()
-                        .ok_or_else(|| ApiError::core("project identifier is missing")),
-                )
-            })?;
+            .await?;
 
-        let project_identifier = project_identifier?;
-        let project_multiaddr = project_multiaddr?;
+        let project_identifier = project
+            .project_identifier()
+            .ok_or_else(|| ApiError::core("Project identifier is missing"))?;
+        let project_multiaddr = project.project_multiaddr().cloned()?;
 
         debug!(addr = %project_multiaddr, "creating secure channel");
         let tcp = multiaddr_to_route(&project_multiaddr, &self.tcp_transport)
@@ -90,6 +89,14 @@ impl Instantiator for ProjectInstantiator {
         debug!("create a secure channel to the project {project_identifier}");
 
         let options = SecureChannelOptions::new().with_authority(project_identifier);
+
+        let options =
+            if let Some(credential_retriever_creator) = self.credential_retriever_creator.clone() {
+                options.with_credential_retriever_creator(credential_retriever_creator)?
+            } else {
+                options
+            };
+
         let options = if let Some(timeout) = self.timeout {
             options.with_timeout(timeout)
         } else {

@@ -15,6 +15,7 @@
 //! │  ├─ node2
 //! │  └─ ...
 //! ```
+#![recursion_limit = "256"]
 
 #[macro_use]
 extern crate tracing;
@@ -44,6 +45,8 @@ pub mod logs;
 mod schema;
 
 mod date;
+/// Proxy vault
+pub mod proxy_vault;
 mod rendezvous_healthcheck;
 pub mod test_utils;
 mod ui;

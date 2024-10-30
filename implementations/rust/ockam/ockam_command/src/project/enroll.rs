@@ -110,7 +110,7 @@ impl Command for EnrollCommand {
         // Create authority client
         let identity = opts
             .state
-            .get_named_identity_or_default(&self.identity_opts.identity_name)
+            .get_named_identity_or_default(Some(ctx), &self.identity_opts.identity_name)
             .await?;
         let node = InMemoryNode::start_with_project_name(
             ctx,

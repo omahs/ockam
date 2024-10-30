@@ -69,7 +69,7 @@ impl<'a> DeleteTui<'a> {
         .await?;
         let identity_name = opts
             .state
-            .get_identity_name_or_default(&cmd.identity_opts.identity_name)
+            .get_or_create_identity_name_or_default(Some(ctx), &cmd.identity_opts.identity_name)
             .await?;
         let identity_enrollment = opts
             .state

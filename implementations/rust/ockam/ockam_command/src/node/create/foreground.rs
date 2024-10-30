@@ -74,6 +74,7 @@ impl CreateCommand {
         let node_info = opts
             .state
             .start_node_with_optional_values(
+                Some(ctx),
                 &node_name,
                 &self.identity,
                 &self.trust_opts.project_name,

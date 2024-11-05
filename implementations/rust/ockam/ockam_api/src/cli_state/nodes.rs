@@ -318,7 +318,7 @@ impl CliState {
     ) -> Result<()> {
         Ok(self
             .nodes_repository()
-            .set_http_server_address(node_name, address)
+            .set_status_endpoint_address(node_name, address)
             .await?)
     }
 
@@ -440,7 +440,7 @@ impl CliState {
             || repository.get_nodes().await?.is_empty();
 
         let tcp_listener_address = repository.get_tcp_listener_address(node_name).await?;
-        let http_server_address = repository.get_http_server_address(node_name).await?;
+        let status_endpoint_address = repository.get_status_endpoint_address(node_name).await?;
 
         let node_info = NodeInfo::new(
             node_name.to_string(),
@@ -450,7 +450,7 @@ impl CliState {
             false,
             tcp_listener_address,
             Some(process::id()),
-            http_server_address,
+            status_endpoint_address,
         );
         repository.store_node(&node_info).await?;
         Ok(node_info)
@@ -554,7 +554,7 @@ pub struct NodeInfo {
     is_authority: bool,
     tcp_listener_address: Option<InternetAddress>,
     pid: Option<u32>,
-    http_server_address: Option<InternetAddress>,
+    status_endpoint_address: Option<InternetAddress>,
 }
 
 impl NodeInfo {
@@ -567,7 +567,7 @@ impl NodeInfo {
         is_authority: bool,
         tcp_listener_address: Option<InternetAddress>,
         pid: Option<u32>,
-        http_server_address: Option<InternetAddress>,
+        status_endpoint_address: Option<InternetAddress>,
     ) -> Self {
         Self {
             name,
@@ -577,7 +577,7 @@ impl NodeInfo {
             is_authority,
             tcp_listener_address,
             pid,
-            http_server_address,
+            status_endpoint_address,
         }
     }
     pub fn name(&self) -> String {
@@ -627,8 +627,8 @@ impl NodeInfo {
             .and_then(|t| t.multi_addr())?)
     }
 
-    pub fn http_server_address(&self) -> Option<InternetAddress> {
-        self.http_server_address.clone()
+    pub fn status_endpoint_address(&self) -> Option<InternetAddress> {
+        self.status_endpoint_address.clone()
     }
 
     pub fn pid(&self) -> Option<u32> {

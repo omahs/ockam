@@ -1,5 +1,5 @@
-use crate::ebpf_portal::packet::RawSocketReadResult;
-use crate::ebpf_portal::{ConnectionIdentifier, Port};
+use crate::privileged_portal::packet::RawSocketReadResult;
+use crate::privileged_portal::{ConnectionIdentifier, Port};
 use ockam_core::{Address, LocalInfoIdentifier, Route};
 use std::collections::HashMap;
 use std::net::Ipv4Addr;

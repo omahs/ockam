@@ -56,7 +56,7 @@ UDP Puncture
 - OCKAM_RENDEZVOUS_SERVER: set this variable to the hostname and port of the Rendezvous service
 
 TCP Portals
-- OCKAM_EBPF: if variable is set, all TCP Inlets/Outlets will be eBPF Inlets/Outlets (overrides `--ebpf` argument for `ockam tcp-inlet create` and `ockam tcp-outlet create`).
+- OCKAM_PRIVILEGED: if variable is set, all TCP Inlets/Outlets will use eBPF (overrides `--privileged` argument for `ockam tcp-inlet create` and `ockam tcp-outlet create`).
 
 Devs Usage
 - OCKAM: a `string` that defines the path to the ockam binary to use.

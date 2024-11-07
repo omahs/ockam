@@ -1,5 +1,5 @@
-use crate::ebpf_portal::packet::TcpStrippedHeaderAndPayload;
-use crate::ebpf_portal::Port;
+use crate::privileged_portal::packet::TcpStrippedHeaderAndPayload;
+use crate::privileged_portal::Port;
 use async_trait::async_trait;
 use ockam_core::Result;
 use std::net::Ipv4Addr;

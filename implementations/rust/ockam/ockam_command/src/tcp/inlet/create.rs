@@ -133,9 +133,9 @@ pub struct CreateCommand {
     pub no_tcp_fallback: bool,
 
     /// Use eBPF and RawSocket to access TCP packets instead of TCP data stream.
-    /// If `OCKAM_EBPF` env variable is set to 1, this argument will be `true`.
-    #[arg(long, env = "OCKAM_EBPF", value_parser = FalseyValueParser::default(), hide = true)]
-    pub ebpf: bool,
+    /// If `OCKAM_PRIVILEGED` env variable is set to 1, this argument will be `true`.
+    #[arg(long, env = "OCKAM_PRIVILEGED", value_parser = FalseyValueParser::default(), hide = true)]
+    pub privileged: bool,
 
     #[arg(long, value_name = "BOOL", default_value_t = false, hide = true)]
     /// Enable TLS for the TCP Inlet.
@@ -194,7 +194,7 @@ impl Command for CreateCommand {
                         &cmd.secure_channel_identifier(&opts.state).await?,
                         cmd.udp,
                         cmd.no_tcp_fallback,
-                        cmd.ebpf,
+                        cmd.privileged,
                         &cmd.tls_certificate_provider,
                     )
                     .await?;

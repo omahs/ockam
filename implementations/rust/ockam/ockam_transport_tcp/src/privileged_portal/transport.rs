@@ -1,4 +1,4 @@
-use crate::ebpf_portal::{Iface, TcpPacketWriter};
+use crate::privileged_portal::{Iface, TcpPacketWriter};
 use crate::TcpTransport;
 use aya::programs::tc::{qdisc_detach_program, TcAttachType};
 use log::{error, info, warn};

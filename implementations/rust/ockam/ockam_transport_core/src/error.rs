@@ -74,8 +74,8 @@ pub enum TransportError {
     RemovingOutletPort(String),
     /// Couldn't read capabilities
     ReadCaps(String),
-    /// eBPF prerequisites check failed
-    EbpfPrerequisitesCheckFailed(String),
+    /// Privileged Portals prerequisites check failed
+    PrivilegedPortalsPrerequisitesCheckFailed(String),
     /// The Identifier of the other side of the portal has changed when updating the route
     IdentifierChanged,
     /// Invalid OckamPortalPacket
@@ -122,8 +122,8 @@ impl core::fmt::Display for TransportError {
             Self::RemovingInletPort(e) => write!(f, "error removing inlet port {}", e),
             Self::RemovingOutletPort(e) => write!(f, "error removing outlet port {}", e),
             Self::ReadCaps(e) => write!(f, "error reading effective capabilities {}", e),
-            Self::EbpfPrerequisitesCheckFailed(e) => {
-                write!(f, "eBPF prerequisites check failed: {}", e)
+            Self::PrivilegedPortalsPrerequisitesCheckFailed(e) => {
+                write!(f, "Privileged Portals prerequisites check failed: {}", e)
             }
             Self::IdentifierChanged => write!(
                 f,
@@ -168,7 +168,7 @@ impl From<TransportError> for Error {
             | RemovingInletPort(_)
             | RemovingOutletPort(_) => Kind::Io,
             ReadCaps(_) => Kind::Io,
-            EbpfPrerequisitesCheckFailed(_) => Kind::Misuse,
+            PrivilegedPortalsPrerequisitesCheckFailed(_) => Kind::Misuse,
             IdentifierChanged => Kind::Conflict,
             InvalidOckamPortalPacket(_) => Kind::Invalid,
         };

@@ -35,7 +35,7 @@ impl NodeManagerWorker {
             worker_addr,
             reachable_from_default_secure_channel,
             policy_expression,
-            ebpf,
+            privileged,
             tls,
         } = body.tcp_outlet;
         let address = self
@@ -93,7 +93,7 @@ impl NodeManagerWorker {
                 Some(outlet_address),
                 reachable_from_default_secure_channel,
                 OutletAccessControl::WithPolicyExpression(policy_expression),
-                ebpf,
+                privileged,
             )
             .await
         {
@@ -118,7 +118,7 @@ impl NodeManagerWorker {
             secure_channel_identifier,
             enable_udp_puncture,
             disable_tcp_fallback,
-            ebpf,
+            privileged,
             tls_certificate_provider,
         } = body.tcp_inlet.clone();
 
@@ -192,7 +192,7 @@ impl NodeManagerWorker {
                 secure_channel_identifier,
                 enable_udp_puncture,
                 disable_tcp_fallback,
-                ebpf,
+                privileged,
                 tls_certificate_provider,
             )
             .await

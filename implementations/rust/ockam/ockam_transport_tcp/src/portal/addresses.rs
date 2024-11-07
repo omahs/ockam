@@ -6,23 +6,23 @@ pub(crate) enum PortalType {
     Inlet,
     Outlet,
     #[allow(unused)]
-    EbpfInlet,
+    PrivilegedInlet,
     #[allow(unused)]
-    EbpfOutlet,
+    PrivilegedOutlet,
 }
 
 impl PortalType {
     pub fn str(&self) -> &'static str {
         match self {
-            PortalType::Inlet | PortalType::EbpfInlet => "inlet",
-            PortalType::Outlet | PortalType::EbpfOutlet => "outlet",
+            PortalType::Inlet | PortalType::PrivilegedInlet => "inlet",
+            PortalType::Outlet | PortalType::PrivilegedOutlet => "outlet",
         }
     }
 
-    pub fn is_ebpf(&self) -> bool {
+    pub fn is_privileged(&self) -> bool {
         match self {
             PortalType::Inlet | PortalType::Outlet => false,
-            PortalType::EbpfInlet | PortalType::EbpfOutlet => true,
+            PortalType::PrivilegedInlet | PortalType::PrivilegedOutlet => true,
         }
     }
 }
@@ -42,26 +42,26 @@ pub(crate) struct Addresses {
 impl Addresses {
     pub(crate) fn generate(portal_type: PortalType) -> Self {
         let type_name = portal_type.str();
-        let ebpf_str = if portal_type.is_ebpf() {
-            "ebpf"
+        let privileged_str = if portal_type.is_privileged() {
+            "privileged"
         } else {
-            "non_ebpf"
+            "non_privileged"
         };
         let sender_internal = Address::random_tagged(&format!(
             "TcpPortalWorker.{}.{}.sender_internal",
-            ebpf_str, type_name
+            privileged_str, type_name
         ));
         let sender_remote = Address::random_tagged(&format!(
             "TcpPortalWorker.{}.{}.sender_remote",
-            ebpf_str, type_name
+            privileged_str, type_name
         ));
         let receiver_internal = Address::random_tagged(&format!(
             "TcpPortalRecvProcessor.{}.{}.receiver_internal",
-            ebpf_str, type_name
+            privileged_str, type_name
         ));
         let receiver_remote = Address::random_tagged(&format!(
             "TcpPortalRecvProcessor.{}.{}.receiver_remote",
-            ebpf_str, type_name
+            privileged_str, type_name
         ));
 
         Self {

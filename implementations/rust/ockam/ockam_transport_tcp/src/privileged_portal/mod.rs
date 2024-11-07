@@ -1,5 +1,5 @@
 mod ebpf_support;
-mod portals;
+mod privileged_portals;
 mod raw_socket;
 mod registry;
 mod transport;

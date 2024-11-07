@@ -1,4 +1,4 @@
-#[cfg(ebpf_alias)]
+#[cfg(privileged_portals_support)]
 mod tests {
     use log::info;
     use std::time::Duration;
@@ -56,7 +56,7 @@ mod tests {
     #[allow(non_snake_case)]
     #[ockam_macros::test(timeout = 5000)]
     #[ignore] // Requires root and capabilities
-    async fn ebpf_portal__standard_flow__should_succeed(ctx: &mut Context) -> Result<()> {
+    async fn privileged_portal__standard_flow__should_succeed(ctx: &mut Context) -> Result<()> {
         let tcp = TcpTransport::create(ctx).await?;
 
         let payload1 = generate_binary();

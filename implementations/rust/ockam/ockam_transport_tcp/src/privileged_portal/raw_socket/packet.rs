@@ -1,5 +1,5 @@
-use crate::ebpf_portal::packet_binary::{ipv4_header, stripped_tcp_header, tcp_header};
-use crate::ebpf_portal::Port;
+use crate::privileged_portal::packet_binary::{ipv4_header, stripped_tcp_header, tcp_header};
+use crate::privileged_portal::Port;
 use std::net::Ipv4Addr;
 
 /// Result of reading packet from RawSocket

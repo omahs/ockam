@@ -13,6 +13,6 @@ fn hash() {
 fn main() {
     hash();
     cfg_aliases! {
-        ebpf_alias: { all(target_os = "linux", feature = "ebpf") }
+        privileged_portals_support: { all(target_os = "linux", feature = "privileged_portals") }
     }
 }

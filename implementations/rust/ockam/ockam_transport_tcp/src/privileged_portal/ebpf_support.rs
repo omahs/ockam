@@ -1,6 +1,6 @@
 #![allow(unsafe_code)]
 
-use crate::ebpf_portal::{
+use crate::privileged_portal::{
     Iface, InletRegistry, OutletRegistry, Port, Proto, RawSocketProcessor, TcpPacketWriter,
 };
 use aya::maps::{MapData, MapError};
@@ -344,7 +344,7 @@ fn map_map_error(map_error: MapError) -> Error {
 #[cfg(test)]
 // requires root to run
 mod tests {
-    use crate::ebpf_portal::TcpTransportEbpfSupport;
+    use crate::privileged_portal::TcpTransportEbpfSupport;
     use ockam_core::Result;
     use ockam_node::Context;
 

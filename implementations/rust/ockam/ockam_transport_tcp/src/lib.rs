@@ -37,9 +37,9 @@ pub use protocol_version::*;
 pub use registry::*;
 pub use transport::*;
 
-#[cfg(ebpf_alias)]
+#[cfg(privileged_portals_support)]
 /// eBPF backed TCP portals that works on TCP level rather than on top of TCP
-pub mod ebpf_portal;
+pub mod privileged_portal;
 
 pub(crate) const CLUSTER_NAME: &str = "_internals.transport.tcp";
 

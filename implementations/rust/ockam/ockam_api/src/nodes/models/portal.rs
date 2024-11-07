@@ -54,7 +54,7 @@ pub struct CreateInlet {
     /// TCP won't be used to transfer data between the Inlet and the Outlet.
     #[n(11)] pub(crate) disable_tcp_fallback: bool,
     /// Use eBPF and RawSocket to access TCP packets instead of TCP data stream.
-    #[n(12)] pub(crate) ebpf: bool,
+    #[n(12)] pub(crate) privileged: bool,
     /// TLS certificate provider route.
     #[n(13)] pub(crate) tls_certificate_provider: Option<MultiAddr>,
 }
@@ -68,7 +68,7 @@ impl CreateInlet {
         wait_connection: bool,
         enable_udp_puncture: bool,
         disable_tcp_fallback: bool,
-        ebpf: bool,
+        privileged: bool,
     ) -> Self {
         Self {
             listen_addr: listen,
@@ -81,7 +81,7 @@ impl CreateInlet {
             secure_channel_identifier: None,
             enable_udp_puncture,
             disable_tcp_fallback,
-            ebpf,
+            privileged,
             tls_certificate_provider: None,
         }
     }
@@ -95,7 +95,7 @@ impl CreateInlet {
         wait_connection: bool,
         enable_udp_puncture: bool,
         disable_tcp_fallback: bool,
-        ebpf: bool,
+        privileged: bool,
     ) -> Self {
         Self {
             listen_addr: listen,
@@ -108,7 +108,7 @@ impl CreateInlet {
             secure_channel_identifier: None,
             enable_udp_puncture,
             disable_tcp_fallback,
-            ebpf,
+            privileged,
             tls_certificate_provider: None,
         }
     }
@@ -169,7 +169,7 @@ pub struct CreateOutlet {
     /// will be used.
     #[n(5)] pub policy_expression: Option<PolicyExpression>,
     /// Use eBPF and RawSocket to access TCP packets instead of TCP data stream.
-    #[n(6)] pub ebpf: bool
+    #[n(6)] pub privileged: bool
 }
 
 impl CreateOutlet {
@@ -178,7 +178,7 @@ impl CreateOutlet {
         tls: bool,
         worker_addr: Option<Address>,
         reachable_from_default_secure_channel: bool,
-        ebpf: bool,
+        privileged: bool,
     ) -> Self {
         Self {
             hostname_port,
@@ -186,7 +186,7 @@ impl CreateOutlet {
             worker_addr,
             reachable_from_default_secure_channel,
             policy_expression: None,
-            ebpf,
+            privileged,
         }
     }
 

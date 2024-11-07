@@ -59,8 +59,8 @@ pub struct TcpTransport {
     ctx: Arc<Context>,
     registry: TcpRegistry,
 
-    #[cfg(ebpf_alias)]
-    pub(crate) ebpf_support: crate::ebpf_portal::TcpTransportEbpfSupport,
+    #[cfg(privileged_portals_support)]
+    pub(crate) ebpf_support: crate::privileged_portal::TcpTransportEbpfSupport,
 }
 
 impl TcpTransport {
@@ -69,7 +69,7 @@ impl TcpTransport {
         Self {
             ctx: Arc::new(ctx),
             registry: TcpRegistry::default(),
-            #[cfg(ebpf_alias)]
+            #[cfg(privileged_portals_support)]
             ebpf_support: Default::default(),
         }
     }

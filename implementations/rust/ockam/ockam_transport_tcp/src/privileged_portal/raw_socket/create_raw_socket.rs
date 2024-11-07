@@ -1,4 +1,4 @@
-use crate::ebpf_portal::{
+use crate::privileged_portal::{
     AsyncFdPacketReader, AsyncFdPacketWriter, Proto, TcpPacketReader, TcpPacketWriter,
 };
 use nix::errno::Errno;

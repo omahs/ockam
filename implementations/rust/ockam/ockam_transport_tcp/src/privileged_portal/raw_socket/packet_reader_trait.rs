@@ -1,4 +1,4 @@
-use crate::ebpf_portal::packet::RawSocketReadResult;
+use crate::privileged_portal::packet::RawSocketReadResult;
 use async_trait::async_trait;
 use ockam_core::Result;
 

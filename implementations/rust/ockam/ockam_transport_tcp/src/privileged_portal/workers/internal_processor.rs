@@ -1,5 +1,5 @@
-use crate::ebpf_portal::packet::RawSocketReadResult;
-use crate::ebpf_portal::{Inlet, InletConnection, OckamPortalPacket, Outlet, PortalMode};
+use crate::privileged_portal::packet::RawSocketReadResult;
+use crate::privileged_portal::{Inlet, InletConnection, OckamPortalPacket, Outlet, PortalMode};
 use log::{debug, trace, warn};
 use ockam_core::{async_trait, route, LocalInfoIdentifier, LocalMessage, Processor, Result};
 use ockam_node::Context;

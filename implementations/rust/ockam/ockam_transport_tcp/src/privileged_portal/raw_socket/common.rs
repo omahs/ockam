@@ -1,4 +1,4 @@
-use crate::ebpf_portal::packet::TcpStrippedHeaderAndPayload;
+use crate::privileged_portal::packet::TcpStrippedHeaderAndPayload;
 use minicbor::{Decode, Encode};
 use rand::distributions::{Distribution, Standard};
 use rand::Rng;

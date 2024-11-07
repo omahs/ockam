@@ -24,7 +24,7 @@ repository = "https://github.com/ockam-network/ockam/implementations/rust/ockam/
 description = "Ockam's request-response API"
 
 [features]
-default = ["std", "rust-crypto", "ebpf"]
+default = ["std", "rust-crypto", "privileged_portals"]
 test-utils = []
 std = [
   "either/use_std",
@@ -43,7 +43,7 @@ std = [
 storage = ["ockam/storage"]
 aws-lc = ["ockam_vault/aws-lc", "ockam_transport_tcp/aws-lc"]
 rust-crypto = ["ockam_vault/rust-crypto", "ockam_transport_tcp/ring"]
-ebpf = ["ockam_transport_tcp/ebpf"]
+privileged_portals = ["ockam_transport_tcp/privileged_portals"]
 
 [build-dependencies]
 cfg_aliases = "0.2.1"

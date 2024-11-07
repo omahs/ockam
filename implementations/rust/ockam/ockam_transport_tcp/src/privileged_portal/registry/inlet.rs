@@ -1,6 +1,6 @@
-use crate::ebpf_portal::packet::RawSocketReadResult;
-use crate::ebpf_portal::{ConnectionIdentifier, Port};
 use crate::portal::InletSharedState;
+use crate::privileged_portal::packet::RawSocketReadResult;
+use crate::privileged_portal::{ConnectionIdentifier, Port};
 use ockam_core::compat::sync::Arc;
 use ockam_core::compat::sync::RwLock as SyncRwLock;
 use ockam_core::{Address, LocalInfoIdentifier};

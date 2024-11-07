@@ -81,7 +81,7 @@ impl ResetCommand {
             opts.state.reset().await?;
         }
 
-        #[cfg(ebpf_alias)]
+        #[cfg(privileged_portals_support)]
         ockam::tcp::TcpTransport::detach_all_ockam_ebpfs_globally();
 
         opts.terminal

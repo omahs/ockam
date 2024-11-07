@@ -1,8 +1,8 @@
-use crate::ebpf_portal::packet::{
+use crate::privileged_portal::packet::{
     Ipv4Info, RawSocketReadResult, TcpInfo, TcpStrippedHeaderAndPayload,
 };
-use crate::ebpf_portal::packet_binary::{ipv4_header, tcp_header};
-use crate::ebpf_portal::TcpPacketReader;
+use crate::privileged_portal::packet_binary::{ipv4_header, tcp_header};
+use crate::privileged_portal::TcpPacketReader;
 use async_trait::async_trait;
 use log::{error, trace};
 use nix::sys::socket::MsgFlags;

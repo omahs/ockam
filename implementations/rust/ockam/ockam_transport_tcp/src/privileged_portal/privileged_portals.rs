@@ -1,5 +1,5 @@
-use crate::ebpf_portal::{InternalProcessor, Port, RemoteWorker};
 use crate::portal::InletSharedState;
+use crate::privileged_portal::{InternalProcessor, Port, RemoteWorker};
 use crate::{TcpInlet, TcpInletOptions, TcpOutletOptions, TcpTransport};
 use caps::Capability::{CAP_BPF, CAP_NET_ADMIN, CAP_NET_RAW, CAP_SYS_ADMIN};
 use caps::{CapSet, Capability};
@@ -17,7 +17,7 @@ use tokio::sync::mpsc::channel;
 use tracing::instrument;
 
 impl TcpTransport {
-    /// Check if eBPF portals can be run with current permissions
+    /// Check if privileged portals can be run with current permissions
     pub fn check_capabilities() -> Result<()> {
         let caps = caps::read(None, CapSet::Effective)
             .map_err(|e| TransportError::ReadCaps(e.to_string()))?;
@@ -43,7 +43,7 @@ impl TcpTransport {
 
         if !check_result {
             error!("Capabilities: {:?}", caps);
-            return Err(TransportError::EbpfPrerequisitesCheckFailed(
+            return Err(TransportError::PrivilegedPortalsPrerequisitesCheckFailed(
                 error_description,
             ))?;
         }
@@ -151,7 +151,7 @@ impl TcpTransport {
             .start(self.ctx())
             .await?;
 
-        Ok(TcpInlet::new_ebpf(
+        Ok(TcpInlet::new_privileged(
             local_address,
             remote_worker_address, // FIXME
             inlet_shared_state,

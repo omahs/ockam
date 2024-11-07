@@ -69,9 +69,9 @@ pub struct CreateCommand {
     pub allow: Option<PolicyExpression>,
 
     /// Use eBPF and RawSocket to access TCP packets instead of TCP data stream.
-    /// If `OCKAM_EBPF` env variable is set to 1, this argument will be `true`.
-    #[arg(long, env = "OCKAM_EBPF", value_parser = FalseyValueParser::default(), hide = true)]
-    pub ebpf: bool,
+    /// If `OCKAM_PRIVILEGED` env variable is set to 1, this argument will be `true`.
+    #[arg(long, env = "OCKAM_PRIVILEGED", value_parser = FalseyValueParser::default(), hide = true)]
+    pub privileged: bool,
 }
 
 #[async_trait]
@@ -97,7 +97,7 @@ impl Command for CreateCommand {
                 self.tls,
                 self.from.clone().map(Address::from).as_ref(),
                 self.allow.clone(),
-                self.ebpf,
+                self.privileged,
             )
             .await?
         };

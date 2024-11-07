@@ -27,7 +27,7 @@ impl NodeManagerWorker {
             reachable_from_default_secure_channel,
             policy_expression,
             tls,
-            ebpf,
+            privileged,
         } = create_outlet;
 
         match self
@@ -39,7 +39,7 @@ impl NodeManagerWorker {
                 worker_addr,
                 reachable_from_default_secure_channel,
                 OutletAccessControl::WithPolicyExpression(policy_expression),
-                ebpf,
+                privileged,
             )
             .await
         {
@@ -98,7 +98,7 @@ impl NodeManager {
         worker_addr: Option<Address>,
         reachable_from_default_secure_channel: bool,
         access_control: OutletAccessControl,
-        ebpf: bool,
+        privileged: bool,
     ) -> Result<OutletStatus> {
         let worker_addr = self
             .registry
@@ -162,19 +162,19 @@ impl NodeManager {
             }
         };
 
-        let res = if ebpf {
-            #[cfg(ebpf_alias)]
+        let res = if privileged {
+            #[cfg(privileged_portals_support)]
             {
                 self.tcp_transport
                     .create_raw_outlet(worker_addr.clone(), to.clone(), options)
                     .await
             }
-            #[cfg(not(ebpf_alias))]
+            #[cfg(not(privileged_portals_support))]
             {
                 Err(ockam_core::Error::new(
                     Origin::Node,
                     Kind::Internal,
-                    "eBPF support is not enabled",
+                    "Privileged Portals support is not enabled",
                 ))
             }
         } else {
@@ -262,7 +262,7 @@ pub trait Outlets {
         tls: bool,
         from: Option<&Address>,
         policy_expression: Option<PolicyExpression>,
-        ebpf: bool,
+        privileged: bool,
     ) -> miette::Result<OutletStatus>;
 }
 
@@ -276,9 +276,9 @@ impl Outlets for BackgroundNodeClient {
         tls: bool,
         from: Option<&Address>,
         policy_expression: Option<PolicyExpression>,
-        ebpf: bool,
+        privileged: bool,
     ) -> miette::Result<OutletStatus> {
-        let mut payload = CreateOutlet::new(to, tls, from.cloned(), true, ebpf);
+        let mut payload = CreateOutlet::new(to, tls, from.cloned(), true, privileged);
         if let Some(policy_expression) = policy_expression {
             payload.set_policy_expression(policy_expression);
         }

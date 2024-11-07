@@ -1,5 +1,5 @@
-use crate::ebpf_portal::packet::RawSocketReadResult;
-use crate::ebpf_portal::{
+use crate::privileged_portal::packet::RawSocketReadResult;
+use crate::privileged_portal::{
     create_async_fd_raw_socket, Inlet, InletRegistry, Outlet, OutletRegistry, TcpPacketReader,
     TcpPacketWriter,
 };

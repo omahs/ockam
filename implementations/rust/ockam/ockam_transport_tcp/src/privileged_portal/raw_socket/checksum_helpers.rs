@@ -1,5 +1,5 @@
-use crate::ebpf_portal::packet_binary::tcp_header;
-use crate::ebpf_portal::ChecksumAccumulator;
+use crate::privileged_portal::packet_binary::tcp_header;
+use crate::privileged_portal::ChecksumAccumulator;
 use std::net::Ipv4Addr;
 
 /// Calculate and set checksum for a TCP packet
@@ -33,7 +33,7 @@ fn tcp_checksum(source_ip: Ipv4Addr, destination_ip: Ipv4Addr, packet: &[u8]) ->
 
 #[cfg(test)]
 mod tests {
-    use crate::ebpf_portal::raw_socket::checksum_helpers::tcp_checksum;
+    use crate::privileged_portal::raw_socket::checksum_helpers::tcp_checksum;
     use std::net::Ipv4Addr;
 
     #[test]

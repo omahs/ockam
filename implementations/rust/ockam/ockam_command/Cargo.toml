@@ -113,8 +113,8 @@ tempfile = "3.10.1"
 time = { version = "0.3", default-features = false, features = ["std", "local-offset"] }
 
 [features]
-default = ["orchestrator", "rust-crypto", "ebpf"]
-ebpf = ["ockam_api/ebpf"]
+default = ["orchestrator", "rust-crypto", "privileged_portals"]
+privileged_portals = ["ockam_api/privileged_portals"]
 orchestrator = []
 aws-lc = ["ockam_vault/aws-lc", "ockam_api/aws-lc", "rustls/aws-lc-rs"]
 rust-crypto = ["ockam_vault/rust-crypto", "ockam_api/rust-crypto", "rustls/ring"]

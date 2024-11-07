@@ -1,6 +1,6 @@
-use crate::ebpf_portal::packet::TcpStrippedHeaderAndPayload;
-use crate::ebpf_portal::packet_binary::tcp_header_ports;
-use crate::ebpf_portal::{tcp_set_checksum, Port, TcpPacketWriter};
+use crate::privileged_portal::packet::TcpStrippedHeaderAndPayload;
+use crate::privileged_portal::packet_binary::tcp_header_ports;
+use crate::privileged_portal::{tcp_set_checksum, Port, TcpPacketWriter};
 use async_trait::async_trait;
 use log::{debug, error};
 use nix::sys::socket::{MsgFlags, SockaddrIn};

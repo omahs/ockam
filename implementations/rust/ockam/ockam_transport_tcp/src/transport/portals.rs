@@ -137,19 +137,19 @@ pub struct TcpInlet {
 
 #[derive(Clone, Debug)]
 enum TcpInletState {
-    Ebpf { portal_worker_address: Address },
+    Privileged { portal_worker_address: Address },
     Regular { processor_address: Address },
 }
 
 impl fmt::Display for TcpInlet {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match &self.state {
-            TcpInletState::Ebpf {
+            TcpInletState::Privileged {
                 portal_worker_address,
             } => {
                 write!(
                     f,
-                    "Socket: {}. Worker address: {}. eBPF",
+                    "Socket: {}. Worker address: {}. Privileged",
                     self.socket_address, portal_worker_address
                 )
             }
@@ -179,7 +179,7 @@ impl TcpInlet {
     }
 
     /// Constructor
-    pub fn new_ebpf(
+    pub fn new_privileged(
         socket_address: SocketAddr,
         portal_worker_address: Address,
         inlet_shared_state: Arc<RwLock<InletSharedState>>,
@@ -187,15 +187,15 @@ impl TcpInlet {
         Self {
             socket_address,
             inlet_shared_state,
-            state: TcpInletState::Ebpf {
+            state: TcpInletState::Privileged {
                 portal_worker_address,
             },
         }
     }
 
-    /// Returns true if the Inlet is eBPF
-    pub fn is_ebpf(&self) -> bool {
-        matches!(self.state, TcpInletState::Ebpf { .. })
+    /// Returns true if the Inlet is privileged
+    pub fn is_privileged(&self) -> bool {
+        matches!(self.state, TcpInletState::Privileged { .. })
     }
 
     /// Socket Address
@@ -206,7 +206,7 @@ impl TcpInlet {
     /// Processor address
     pub fn processor_address(&self) -> Option<&Address> {
         match &self.state {
-            TcpInletState::Ebpf { .. } => None,
+            TcpInletState::Privileged { .. } => None,
             TcpInletState::Regular { processor_address } => Some(processor_address),
         }
     }
@@ -221,7 +221,7 @@ impl TcpInlet {
     /// reachable, or if we want to switch transport, e.g., from relayed to UDP NAT puncture.
     ///  NOTE: For regular Portals existing TCP connections will still use the old route,
     ///        only newly accepted connections will use the new route.
-    ///        For eBPF Portals old connections can continue work in case the Identifier of the
+    ///        For privileged Portals old connections can continue work in case the Identifier of the
     ///        Outlet node didn't change
     pub async fn update_outlet_node_route(&self, ctx: &Context, new_route: Route) -> Result<()> {
         let mut inlet_shared_state = self.inlet_shared_state.write().await;
@@ -244,7 +244,7 @@ impl TcpInlet {
 
     fn update_flow_controls(&self, flow_controls: &FlowControls, next: Address) {
         match &self.state {
-            TcpInletState::Ebpf {
+            TcpInletState::Privileged {
                 portal_worker_address,
             } => {
                 TcpInletOptions::setup_flow_control_for_address(
@@ -275,7 +275,7 @@ impl TcpInlet {
     /// Stop the Inlet
     pub async fn stop(&self, ctx: &Context) -> Result<()> {
         match &self.state {
-            TcpInletState::Ebpf { .. } => {
+            TcpInletState::Privileged { .. } => {
                 // TODO: eBPF
             }
             TcpInletState::Regular { processor_address } => {

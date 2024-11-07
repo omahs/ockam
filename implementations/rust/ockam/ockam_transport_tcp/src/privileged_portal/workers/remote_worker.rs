@@ -1,5 +1,5 @@
-use crate::ebpf_portal::packet::TcpStrippedHeaderAndPayload;
-use crate::ebpf_portal::{
+use crate::privileged_portal::packet::TcpStrippedHeaderAndPayload;
+use crate::privileged_portal::{
     ConnectionIdentifier, Inlet, InletConnection, OckamPortalPacket, Outlet, OutletConnection,
     OutletConnectionReturnRoute, Port, TcpPacketWriter, TcpTransportEbpfSupport,
 };

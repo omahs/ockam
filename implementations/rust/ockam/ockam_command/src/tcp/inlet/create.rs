@@ -23,7 +23,7 @@ use ockam_api::cli_state::journeys::{
     TCP_INLET_FROM, TCP_INLET_TO,
 };
 use ockam_api::cli_state::{random_name, CliState};
-use ockam_api::colors::color_primary;
+use ockam_api::colors::{color_primary, color_primary_alt};
 use ockam_api::nodes::models::portal::InletStatus;
 use ockam_api::nodes::service::tcp_inlets::Inlets;
 use ockam_api::nodes::BackgroundNodeClient;
@@ -166,6 +166,12 @@ impl Command for CreateCommand {
     async fn async_run(self, ctx: &Context, opts: CommandGlobalOpts) -> crate::Result<()> {
         initialize_default_node(ctx, &opts).await?;
 
+        let (inlet_str, outlet_str) = if self.privileged {
+            ("Privileged TCP Inlet", "Privileged TCP Outlet")
+        } else {
+            ("TCP Inlet", "TCP Outlet")
+        };
+
         let cmd = self.parse_args(&opts).await?;
 
         let mut node = BackgroundNodeClient::create(ctx, &opts.state, &cmd.at).await?;
@@ -175,7 +181,8 @@ impl Command for CreateCommand {
             let pb = opts.terminal.progress_bar();
             if let Some(pb) = pb.as_ref() {
                 pb.set_message(format!(
-                    "Creating TCP Inlet at {}...\n",
+                    "Creating {} at {}...\n",
+                    color_primary_alt(inlet_str),
                     color_primary(cmd.from.to_string())
                 ));
             }
@@ -217,7 +224,8 @@ impl Command for CreateCommand {
 
                         if let Some(pb) = pb.as_ref() {
                             pb.set_message(format!(
-                                "Waiting for TCP Inlet {} to be available... Retrying momentarily\n",
+                                "Waiting for {} {} to be available... Retrying momentarily\n",
+                                color_primary_alt(inlet_str),
                                 color_primary(&cmd.to)
                             ));
                         }
@@ -232,26 +240,33 @@ impl Command for CreateCommand {
             .await?;
 
         let created_message = fmt_ok!(
-            "Created a new TCP Inlet in the Node {} bound to {}\n",
+            "Created a new {} in the Node {} bound to {}\n",
+            color_primary_alt(inlet_str),
             color_primary(&node_name),
             color_primary(cmd.from.to_string())
         );
 
         let plain = if cmd.no_connection_wait {
-            created_message + &fmt_log!("It will automatically connect to the TCP Outlet at {} as soon as it is available",
-                color_primary(&cmd.to)
-            )
+            created_message
+                + &fmt_log!(
+                    "It will automatically connect to the {} at {} as soon as it is available",
+                    color_primary_alt(outlet_str),
+                    color_primary(&cmd.to)
+                )
         } else if inlet_status.status == ConnectionStatus::Up {
             created_message
                 + &fmt_log!(
-                    "sending traffic to the TCP Outlet at {}",
+                    "sending traffic to the {} at {}",
+                    color_primary_alt(outlet_str),
                     color_primary(&cmd.to)
                 )
         } else {
             fmt_warn!(
-                "A TCP Inlet was created in the Node {} bound to {} but failed to connect to the TCP Outlet at {}\n",
+                "A {} was created in the Node {} bound to {} but failed to connect to the {} at {}\n",
+                color_primary_alt(inlet_str),
                 color_primary(&node_name),
-                 color_primary(cmd.from.to_string()),
+                color_primary(cmd.from.to_string()),
+                color_primary_alt(outlet_str),
                 color_primary(&cmd.to)
             ) + &fmt_info!("It will retry to connect automatically")
         };

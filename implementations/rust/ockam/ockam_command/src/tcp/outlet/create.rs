@@ -17,7 +17,7 @@ use ockam_api::address::extract_address_value;
 use ockam_api::cli_state::journeys::{
     JourneyEvent, NODE_NAME, TCP_OUTLET_AT, TCP_OUTLET_FROM, TCP_OUTLET_TO,
 };
-use ockam_api::colors::color_primary;
+use ockam_api::colors::{color_primary, color_primary_alt};
 use ockam_api::fmt_ok;
 use ockam_api::nodes::models::portal::OutletStatus;
 use ockam_api::nodes::service::tcp_outlets::Outlets;
@@ -81,13 +81,20 @@ impl Command for CreateCommand {
     async fn async_run(self, ctx: &Context, opts: CommandGlobalOpts) -> crate::Result<()> {
         initialize_default_node(ctx, &opts).await?;
 
+        let outlet_str = if self.privileged {
+            "Privileged TCP Outlet"
+        } else {
+            "TCP Outlet"
+        };
+
         let node = BackgroundNodeClient::create(ctx, &opts.state, &self.at).await?;
         let node_name = node.node_name();
         let outlet_status = {
             let pb = opts.terminal.progress_bar();
             if let Some(pb) = pb.as_ref() {
                 pb.set_message(format!(
-                    "Creating a new TCP Outlet to {}...\n",
+                    "Creating a new {} to {}...\n",
+                    color_primary_alt(outlet_str),
                     color_primary(self.to.to_string())
                 ));
             }
@@ -109,7 +116,8 @@ impl Command for CreateCommand {
         opts.terminal
             .stdout()
             .plain(fmt_ok!(
-                "Created a new TCP Outlet in the Node {} at {} bound to {}\n\n",
+                "Created a new {} in the Node {} at {} bound to {}\n\n",
+                color_primary_alt(outlet_str),
                 color_primary(&node_name),
                 color_primary(worker_route.to_string()),
                 color_primary(self.to.to_string())
